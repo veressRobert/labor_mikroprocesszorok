@@ -80,6 +80,8 @@ int main(void)
   /* Configure the system clock */
   SystemClock_Config();
 
+
+
   /* USER CODE BEGIN SysInit */
 
   /* USER CODE END SysInit */
@@ -101,7 +103,7 @@ int main(void)
   uint32_t* GPIO_AFRH_addr = (uint32_t *)(GPIOD_base_addr+0x24);
   uint32_t* RCC_AHB1 = (uint32_t *)(RCC_base_addr+0x30);
 
-  *RCC_AHB1 = 0x00100008;			// Set the periphery register
+  *RCC_AHB1 |= 0x00100008;			// Set the periphery register
   *GPIO_MODDER_addr = 0x00004000; 	// Setting the PD7 GPIO to output, everything else to input
   *GPIO_OTYPER_addr = 0x00000000; 	// Reset, all types set to push-pull
   *GPIO_OSPEEDR_addr = 0x00000000; 	// Low speed
@@ -118,8 +120,11 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  *GPIO_ODR_addr = *GPIO_ODR_addr^0x00000080; 	// Toggle the PD7 pins state
-	  for(uint32_t i = 0; i < 3330000; i++); 		// Wait for 500 milliseconds (clk = 25 MHz)
+	  //*GPIO_ODR_addr = *GPIO_ODR_addr^0x00000080; 	// Toggle the PD7 pins state
+	  //for(uint32_t i = 0; i < 3330000; i++); 		// Wait for 500 milliseconds (clk = 25 MHz)
+	  HAL_GPIO_TogglePin(LD1_GPIO_Port, LD1_Pin);
+	  HAL_Delay(300);
+
 
     /* USER CODE END WHILE */
 
@@ -192,8 +197,7 @@ void Error_Handler(void)
   }
   /* USER CODE END Error_Handler_Debug */
 }
-
-#ifdef  USE_FULL_ASSERT
+#ifdef USE_FULL_ASSERT
 /**
   * @brief  Reports the name of the source file and the source line number
   *         where the assert_param error has occurred.
